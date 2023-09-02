@@ -1,0 +1,5 @@
+influxdb-client[ciso]
+requests
+pyTibber
+tzdata
+pytz
