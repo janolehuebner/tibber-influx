@@ -13,4 +13,4 @@ ADD pulse.py /
 # Chmod
 RUN chmod 755 /pulse.py
 
-CMD ["/bin/python3","/pulse.py"]
+CMD ["python3","/pulse.py"]
