@@ -6,7 +6,7 @@ import time
 from dateutil.parser import parse
 
 
-print("tibberpulse-influxdb")
+print("tibber_v001")
 import tibber.const
 import asyncio
 import aiohttp
