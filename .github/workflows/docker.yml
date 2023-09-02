@@ -22,7 +22,7 @@ jobs:
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
             DOCKER_TAG="latest"
           elif [ "${{ github.ref }}" == "refs/heads/dev" ]; then
-            DOCKER_TAG="dev"
+            DOCKER_TAG="development"
           else
             DOCKER_TAG="other"
           fi
