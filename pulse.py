@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-import random
+import sys
 
 import tibber.const
 import asyncio
@@ -9,6 +9,7 @@ import tibber
 from influxdb_client import InfluxDBClient
 from influxdb_client.client.write_api import SYNCHRONOUS
 from DataPoints import Pulse
+import logging
 
 TOKEN=os.getenv('TOKEN', '')
 TIBBERTOKEN=os.getenv('TIBBERTOKEN', '')
@@ -16,9 +17,21 @@ URL = os.getenv('URL',"" )
 BUCKET = os.getenv('BUCKET',"tibber" )
 ORG = os.getenv('ORG',"Default" )
 
-__version__ = "v0.0.2"
-print(f"tibber_{__version__}")
+#logging
+logger = logging.getLogger("TibberInflux")
+formatter = logging.Formatter(
+    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch=logging.StreamHandler(sys.stdout)
+#fh = logging.FileHandler('log.log')
+ch.setFormatter(formatter)
+#fh.setFormatter(formatter)
+logger.addHandler(ch)
+#logger.addHandler(fh)
 
+logger.setLevel(logging.INFO)
+
+__version__ = "v0.0.3"
+logger.info(__version__)
 client = InfluxDBClient(url=URL, token=TOKEN, org=ORG)
 
 write_api = client.write_api(write_options=SYNCHRONOUS)
@@ -31,7 +44,7 @@ def _incoming(pkg):
             exit(1)
         p = Pulse(data).get_datapoint()
         write_api.write(record=p, bucket=BUCKET)
-        print(p)
+        logger.info(p)
         return True
     except:
         exit(1)
@@ -39,7 +52,7 @@ def _incoming(pkg):
 async def run():
     async with aiohttp.ClientSession() as session:
         if session.closed:
-            print("session closed")
+            logger.error("session closed")
             exit(1)
         tibber_connection = tibber.Tibber(TIBBERTOKEN, websession=session, user_agent="python")
         await tibber_connection.update_info()
