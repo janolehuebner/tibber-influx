@@ -8,7 +8,7 @@ ADD requirenments.txt /
 RUN pip3 install -r /requirenments.txt
 # Environment
 ENV PYTHONIOENCODING=utf-8
-ADD pulse.py /
+ADD . /
 
 # Chmod
 RUN chmod 755 /pulse.py

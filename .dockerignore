@@ -1,0 +1,5 @@
+dev.env
+auth.env
+notes
+.gitignore
+.github
