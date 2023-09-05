@@ -33,7 +33,7 @@ logger.addHandler(ch)
 
 logger.setLevel(logging.INFO)
 
-__version__ = "v0.0.4"
+__version__ = "v0.0.5"
 logger.info(__version__)
 client = InfluxDBClient(url=URL, token=TOKEN, org=ORG)
 
@@ -60,22 +60,15 @@ async def run():
         tibber_connection = tibber.Tibber(TIBBERTOKEN, websession=session, user_agent="python")
         await tibber_connection.update_info()
     home = tibber_connection.get_homes()[0]
-    try:
-        await home.rt_subscribe(_incoming)
-    except RuntimeError as e:
-        logger.error(f"Caught a RuntimeError: {e}")
-        exit(1)
-    except Exception as e:
-        exit(1)
+    await home.rt_subscribe(_incoming)
 
-    while 1:
+
+    while time.time() - start_time < duration_seconds:
         await asyncio.sleep(5)
 
 
 
 loop = asyncio.get_event_loop()
+loop.run_until_complete(run())
+exit(0)
 
-try:
-    loop.run_until_complete(run())
-except:
-    exit(1)
