@@ -17,8 +17,7 @@ TIBBERTOKEN=os.getenv('TIBBERTOKEN', '')
 URL = os.getenv('URL',"" )
 BUCKET = os.getenv('BUCKET',"tibber" )
 ORG = os.getenv('ORG',"Default" )
-duration_seconds = 3600
-start_time = time.time()
+
 
 #logging
 logger = logging.getLogger("TibberInflux")
@@ -33,7 +32,7 @@ logger.addHandler(ch)
 
 logger.setLevel(logging.INFO)
 
-__version__ = "v0.0.5"
+__version__ = "v0.0.6"
 logger.info(__version__)
 client = InfluxDBClient(url=URL, token=TOKEN, org=ORG)
 
@@ -63,12 +62,12 @@ async def run():
     await home.rt_subscribe(_incoming)
 
 
-    while time.time() - start_time < duration_seconds:
+    while 1:
         await asyncio.sleep(5)
 
 
 
 loop = asyncio.get_event_loop()
+
 loop.run_until_complete(run())
-exit(0)
 
