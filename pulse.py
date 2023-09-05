@@ -10,12 +10,15 @@ from influxdb_client import InfluxDBClient
 from influxdb_client.client.write_api import SYNCHRONOUS
 from DataPoints import Pulse
 import logging
+import time
 
 TOKEN=os.getenv('TOKEN', '')
 TIBBERTOKEN=os.getenv('TIBBERTOKEN', '')
 URL = os.getenv('URL',"" )
 BUCKET = os.getenv('BUCKET',"tibber" )
 ORG = os.getenv('ORG',"Default" )
+duration_seconds = 3600
+start_time = time.time()
 
 #logging
 logger = logging.getLogger("TibberInflux")
@@ -58,9 +61,11 @@ async def run():
         await tibber_connection.update_info()
     home = tibber_connection.get_homes()[0]
     try:
-         await home.rt_subscribe(_incoming)
-
-    except:
+        await home.rt_subscribe(_incoming)
+    except RuntimeError as e:
+        logger.error(f"Caught a RuntimeError: {e}")
+        exit(1)
+    except Exception as e:
         exit(1)
 
     while 1:
@@ -69,4 +74,8 @@ async def run():
 
 
 loop = asyncio.get_event_loop()
-loop.run_until_complete(run())
+
+try:
+    loop.run_until_complete(run())
+except:
+    exit(1)
