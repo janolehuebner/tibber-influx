@@ -10,15 +10,13 @@ from influxdb_client import InfluxDBClient
 from influxdb_client.client.write_api import SYNCHRONOUS
 from DataPoints import Pulse
 import logging
-import time
+
 
 TOKEN=os.getenv('TOKEN', '')
 TIBBERTOKEN=os.getenv('TIBBERTOKEN', '')
 URL = os.getenv('URL',"" )
 BUCKET = os.getenv('BUCKET',"tibber" )
 ORG = os.getenv('ORG',"Default" )
-
-
 #logging
 logger = logging.getLogger("TibberInflux")
 formatter = logging.Formatter(
@@ -32,7 +30,7 @@ logger.addHandler(ch)
 
 logger.setLevel(logging.INFO)
 
-__version__ = "v0.0.6"
+__version__ = "v0.1.1"
 logger.info(__version__)
 client = InfluxDBClient(url=URL, token=TOKEN, org=ORG)
 
@@ -70,4 +68,3 @@ async def run():
 loop = asyncio.get_event_loop()
 
 loop.run_until_complete(run())
-
