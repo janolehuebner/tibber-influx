@@ -12,5 +12,5 @@ ADD . /
 
 # Chmod
 RUN chmod 755 /pulse.py
-
+CMD ["python3","/get_price.py"]
 CMD ["python3","/pulse.py"]
