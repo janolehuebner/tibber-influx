@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import time
 
 import tibber.const
 import asyncio
@@ -30,7 +31,7 @@ logger.addHandler(ch)
 
 logger.setLevel(logging.INFO)
 
-__version__ = "v0.1.1"
+__version__ = "v0.1.2"
 logger.info(__version__)
 client = InfluxDBClient(url=URL, token=TOKEN, org=ORG)
 
@@ -59,12 +60,13 @@ async def run():
     home = tibber_connection.get_homes()[0]
     await home.rt_subscribe(_incoming)
 
-
-    while 1:
-        await asyncio.sleep(5)
+    timeout = time.time() + 3600  # Set a timeout for 3600 seconds (1 hour)
+    while time.time() < timeout:
+        await asyncio.sleep(2)
 
 
 
 loop = asyncio.get_event_loop()
 
 loop.run_until_complete(run())
+exit(42)
