@@ -4,8 +4,8 @@ FROM python:3.10-slim
 LABEL MAINTAINER="Jan-Ole Hübner <huebner@jan-ole.de>"
 
 
-ADD requirenments.txt /
-RUN pip3 install -r /requirenments.txt
+ADD requirements.txt /
+RUN pip3 install -r /requirements.txt
 # Environment
 ENV PYTHONIOENCODING=utf-8
 ADD . /

@@ -31,10 +31,10 @@ logger.addHandler(ch)
 
 logger.setLevel(logging.INFO)
 
-__version__ = "v0.1.2"
+__version__ = "v0.1.3"
 logger.info(__version__)
 client = InfluxDBClient(url=URL, token=TOKEN, org=ORG)
-
+print("Connected to DB")
 write_api = client.write_api(write_options=SYNCHRONOUS)
 query_api = client.query_api()
 
