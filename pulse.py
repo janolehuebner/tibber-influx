@@ -31,24 +31,21 @@ logger.addHandler(ch)
 
 logger.setLevel(logging.INFO)
 
-__version__ = "v0.1.3"
+__version__ = "v0.1.4"
 logger.info(__version__)
 client = InfluxDBClient(url=URL, token=TOKEN, org=ORG)
-print("Connected to DB")
+
 write_api = client.write_api(write_options=SYNCHRONOUS)
 query_api = client.query_api()
-
+print("Connected to DB")
 def _incoming(pkg):
-    try:
-        data = pkg.get("data")
-        if data is None:
-            exit(1)
-        p = Pulse(data).get_datapoint()
-        write_api.write(record=p, bucket=BUCKET)
-        logger.info(p)
-        return True
-    except:
+    data = pkg.get("data")
+    if data is None:
         exit(1)
+    p = Pulse(data).get_datapoint()
+    write_api.write(record=p, bucket=BUCKET)
+    logger.info(p)
+    return True
 
 async def run():
     async with aiohttp.ClientSession() as session:
@@ -69,4 +66,5 @@ async def run():
 loop = asyncio.get_event_loop()
 
 loop.run_until_complete(run())
+print("42")
 exit(42)
