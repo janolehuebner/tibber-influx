@@ -60,7 +60,7 @@ async def run():
     home = tibber_connection.get_homes()[0]
     await home.rt_subscribe(_incoming)
 
-    timeout = time.time() + 3600  # Set a timeout for 3600 seconds (1 hour)
+    timeout = time.time() + 1800  # Set a timeout for 3600 seconds (1 hour)
     while time.time() < timeout:
         await asyncio.sleep(2)
 
