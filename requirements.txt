@@ -3,3 +3,4 @@ requests
 pyTibber
 tzdata
 pytz
+certifi

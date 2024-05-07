@@ -31,7 +31,7 @@ logger.addHandler(ch)
 
 logger.setLevel(logging.INFO)
 
-__version__ = "v0.1.2"
+__version__ = "v0.1.3"
 logger.info(__version__)
 client = InfluxDBClient(url=URL, token=TOKEN, org=ORG)
 
@@ -51,11 +51,19 @@ def _incoming(pkg):
         exit(1)
 
 async def run():
-    async with aiohttp.ClientSession() as session:
+    conn = aiohttp.TCPConnector(limit_per_host=3)
+    async with aiohttp.ClientSession(trust_env=True, connector=conn) as session:
+        logger.info("connecting to tibber...")
         if session.closed:
             logger.error("session closed")
             exit(1)
-        tibber_connection = tibber.Tibber(TIBBERTOKEN, websession=session, user_agent="python")
+        try:
+            tibber_connection = tibber.Tibber(TIBBERTOKEN, user_agent="python")
+        except Exception as e:
+            logger.info("error connecting to tibber...")
+
+            logger.info(e)
+            raise e
         await tibber_connection.update_info()
     home = tibber_connection.get_homes()[0]
     await home.rt_subscribe(_incoming)
