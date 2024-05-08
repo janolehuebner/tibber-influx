@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.12-bookworm
 
 # Labels
 LABEL MAINTAINER="Jan-Ole Hübner <huebner@jan-ole.de>"
@@ -12,5 +12,4 @@ ADD . /
 
 # Chmod
 RUN chmod 755 /pulse.py
-CMD ["python3","/get_price.py"]
 CMD ["python3","/pulse.py"]

@@ -1,6 +1,6 @@
 influxdb-client[ciso]
 requests
-pyTibber
+pyTibber @ git+https://github.com/Danielhiversen/pyTibber@f64cb36
 tzdata
 pytz
 certifi
