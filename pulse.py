@@ -29,7 +29,7 @@ logger.addHandler(ch)
 
 logger.setLevel(logging.INFO)
 
-__version__ = "v0.1.7"
+__version__ = "v0.1.8"
 logger.info(__version__)
 client = InfluxDBClient(url=URL, token=TOKEN, org=ORG)
 
@@ -56,5 +56,5 @@ async def run():
         await asyncio.sleep(2)
 
 
-loop = asyncio.get_event_loop_policy().get_event_loop()
+loop = asyncio.new_event_loop()
 loop.run_until_complete(run())
