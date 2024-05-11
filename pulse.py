@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import time
 
 import tibber.const
 import asyncio
@@ -29,7 +30,7 @@ logger.addHandler(ch)
 
 logger.setLevel(logging.INFO)
 
-__version__ = "v0.1.8"
+__version__ = "v0.1.0"
 logger.info(__version__)
 client = InfluxDBClient(url=URL, token=TOKEN, org=ORG)
 
@@ -38,23 +39,44 @@ query_api = client.query_api()
 
 
 def _incoming(pkg):
-    data = pkg.get("data")
-    p = Pulse(data).get_datapoint()
-    write_api.write(record=p, bucket=BUCKET)
-    logger.info(p)
+    try:
+        data = pkg.get("data")
+        if data is None:
+            exit(1)
+        p = Pulse(data).get_datapoint()
+        write_api.write(record=p, bucket=BUCKET)
+        logger.info(p)
+        return True
+    except:
+        exit(1)
 
 
 async def run():
     conn = aiohttp.TCPConnector(limit_per_host=3)
     async with aiohttp.ClientSession(trust_env=True, connector=conn) as session:
-        tibber_connection = tibber.Tibber(TIBBERTOKEN, user_agent="python", websession=session)
+
+        logger.info("connecting to tibber...")
+        if session.closed:
+            logger.error("session closed")
+            exit(1)
+        try:
+            tibber_connection = tibber.Tibber(TIBBERTOKEN, user_agent="python", websession=session)
+
+        except Exception as e:
+            logger.info("error connecting to tibber...")
+
+            logger.info(e)
+            raise e
         await tibber_connection.update_info()
     home = tibber_connection.get_homes()[0]
     await home.rt_subscribe(_incoming)
 
-    while True:
-        await asyncio.sleep(2)
+    timeout = time.time() + 18000  # Set a timeout for 3600 seconds (1 hour)
+    while time.time() < timeout:
+        await asyncio.sleep(5)
 
 
 loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
 loop.run_until_complete(run())
+exit(42)
