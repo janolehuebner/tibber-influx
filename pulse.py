@@ -12,17 +12,16 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 from DataPoints import Pulse
 import logging
 
-
-TOKEN=os.getenv('TOKEN', '')
-TIBBERTOKEN=os.getenv('TIBBERTOKEN', '')
-URL = os.getenv('URL',"" )
-BUCKET = os.getenv('BUCKET',"tibber" )
-ORG = os.getenv('ORG',"Default" )
+TOKEN = os.getenv('TOKEN', '')
+TIBBERTOKEN = os.getenv('TIBBERTOKEN', '')
+URL = os.getenv('URL', "")
+BUCKET = os.getenv('BUCKET', "tibber")
+ORG = os.getenv('ORG', "Default")
 #logging
 logger = logging.getLogger("TibberInflux")
 formatter = logging.Formatter(
     '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-ch=logging.StreamHandler(sys.stdout)
+ch = logging.StreamHandler(sys.stdout)
 #fh = logging.FileHandler('log.log')
 ch.setFormatter(formatter)
 #fh.setFormatter(formatter)
@@ -31,12 +30,13 @@ logger.addHandler(ch)
 
 logger.setLevel(logging.INFO)
 
-__version__ = "v0.1.6"
+__version__ = "v0.1.0"
 logger.info(__version__)
 client = InfluxDBClient(url=URL, token=TOKEN, org=ORG)
 
 write_api = client.write_api(write_options=SYNCHRONOUS)
 query_api = client.query_api()
+
 
 def _incoming(pkg):
     try:
@@ -50,6 +50,7 @@ def _incoming(pkg):
     except:
         exit(1)
 
+
 async def run():
     conn = aiohttp.TCPConnector(limit_per_host=3)
     async with aiohttp.ClientSession(trust_env=True, connector=conn) as session:
@@ -59,7 +60,7 @@ async def run():
             logger.error("session closed")
             exit(1)
         try:
-            tibber_connection = tibber.Tibber(TIBBERTOKEN, user_agent="python",websession=session)
+            tibber_connection = tibber.Tibber(TIBBERTOKEN, user_agent="python", websession=session)
 
         except Exception as e:
             logger.info("error connecting to tibber...")
@@ -70,13 +71,12 @@ async def run():
     home = tibber_connection.get_homes()[0]
     await home.rt_subscribe(_incoming)
 
-    timeout = time.time() + 1800  # Set a timeout for 3600 seconds (1 hour)
+    timeout = time.time() + 18000  # Set a timeout for 3600 seconds (1 hour)
     while time.time() < timeout:
-        await asyncio.sleep(2)
+        await asyncio.sleep(5)
 
 
-
-loop = asyncio.get_event_loop()
-
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
 loop.run_until_complete(run())
 exit(42)
