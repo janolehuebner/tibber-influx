@@ -1,6 +1,8 @@
 import asyncio
 import os
+import signal
 import sys
+import time
 
 import tibber
 from influxdb_client import InfluxDBClient
@@ -23,12 +25,18 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 logger.setLevel(logging.INFO)
 
-__version__ = "v0.3.0"
+__version__ = "v0.3.1"
 logger.info(__version__)
 
+
+logger.info("connecting to db...")
 client = InfluxDBClient(url=URL, token=TOKEN, org=ORG)
 write_api = client.write_api(write_options=SYNCHRONOUS)
 query_api = client.query_api()
+logger.info("connecting to tibber...")
+account = tibber.Account(TIBBERTOKEN)
+home = account.homes[0]
+logger.info("starting subscription...")
 
 def _incoming(data):
     try:
@@ -39,14 +47,32 @@ def _incoming(data):
         logger.exception("Error in _incoming():")
         raise e
 
-account = tibber.Account(TIBBERTOKEN)
-home = account.homes[0]
+def timeout_handler(signum, frame):
+    raise TypeError("Timeout occurred")
 
 @home.event("live_measurement")
 async def show_current_power(data):
+    signal.alarm(5)
     _incoming(data)
 
-home.start_live_feed(user_agent="UserAgent/0.0.1")
-logger.info("Livefeed started")
-while home.live_feed.running:
-    event = home.event("live_measurement")
+def stop(home):
+    return False
+
+try:
+    signal.signal(signal.SIGALRM, timeout_handler)
+    signal.alarm(8)
+    home.start_live_feed(user_agent="pulse.py/0.3.1",exit_condition=stop(home),retries=1,retry_interval=3.0)
+except TypeError:
+    logger.exception("Timeout occurred while executing start_live_feed()")
+    client.close()
+    exit(1)
+except Exception:
+    logger.exception("Error in start_live_feed()")
+    client.close()
+    exit(41)
+
+
+
+
+
+
