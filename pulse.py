@@ -25,7 +25,7 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 logger.setLevel(logging.INFO)
 
-__version__ = "v0.3.3"
+__version__ = "v0.3.4"
 logger.info(__version__)
 
 
@@ -60,8 +60,8 @@ def stop(home):
 
 try:
     signal.signal(signal.SIGALRM, timeout_handler)
-    signal.alarm(8)
-    home.start_live_feed(user_agent="pulse.py/0.3.1",exit_condition=stop(home),retries=1,retry_interval=3.0)
+    signal.alarm(15)
+    home.start_live_feed(user_agent="pulse.py/0.3.4",exit_condition=stop(home),retries=2,retry_interval=3.0)
 except TypeError:
     logger.exception("Timeout occurred while executing start_live_feed()")
     client.close()
