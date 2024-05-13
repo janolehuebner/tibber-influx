@@ -25,7 +25,7 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 logger.setLevel(logging.INFO)
 
-__version__ = "v0.3.1"
+__version__ = "v0.3.2"
 logger.info(__version__)
 
 
@@ -52,7 +52,7 @@ def timeout_handler(signum, frame):
 
 @home.event("live_measurement")
 async def show_current_power(data):
-    signal.alarm(5)
+    signal.alarm(0)
     _incoming(data)
 
 def stop(home):
