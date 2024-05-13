@@ -1,9 +1,10 @@
 from datetime import datetime
 from influxdb_client import Point
+import json
 class Pulse:
     label = str(__name__).lower()
     def __init__(self,data):
-        measurement = data['liveMeasurement']
+        measurement = data.cache
         timestamp = measurement['timestamp']
         power = measurement['power']
         cost = measurement.get('accumulatedCost',None)
@@ -26,13 +27,15 @@ class Pulse:
 class Price:
     label = str(__name__).lower()
     def __init__(self,data):
-        measurement = data['data']['viewer']['homes'][0]['currentSubscription']['priceInfo']['current']
+        measurement = data.cache
         current_time_utc = datetime.utcnow()
         timestamp = current_time_utc.isoformat()
-        total = measurement.get('total',0.34)
+        total = measurement["total"]
+        tax = measurement["tax"]
         tags = {self.label: ""}
         fields = {
             "total": float(total),
+            "tax": float(tax)
         }
         self.datapoint = {"fields": fields,
                      "tags": tags,
