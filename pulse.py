@@ -29,7 +29,7 @@ logger.addHandler(ch)
 
 logger.setLevel(logging.INFO)
 
-__version__ = "v0.2.0"
+__version__ = "v0.2.1"
 logger.info(__version__)
 client = InfluxDBClient(url=URL, token=TOKEN, org=ORG)
 
@@ -76,7 +76,7 @@ async def run():
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
 try:
-    asyncio.gather(run(), return_exceptions=True)
+    loop.run_until_complete(asyncio.gather(run(), return_exceptions=True))
 except Exception as e:
     raise e
-loop.run_until_complete(run())
+
