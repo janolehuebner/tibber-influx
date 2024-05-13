@@ -25,7 +25,7 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 logger.setLevel(logging.INFO)
 
-__version__ = "v0.3.2"
+__version__ = "v0.3.3"
 logger.info(__version__)
 
 
