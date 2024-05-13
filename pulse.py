@@ -29,7 +29,7 @@ logger.addHandler(ch)
 
 logger.setLevel(logging.INFO)
 
-__version__ = "v0.2.2"
+__version__ = "v0.2.3"
 logger.info(__version__)
 client = InfluxDBClient(url=URL, token=TOKEN, org=ORG)
 
@@ -51,27 +51,31 @@ def _incoming(pkg):
 
 
 async def run():
-    conn = aiohttp.TCPConnector(limit_per_host=3)
-    async with aiohttp.ClientSession(trust_env=True, connector=conn) as session:
+    try:
+        conn = aiohttp.TCPConnector(limit_per_host=3)
+        async with aiohttp.ClientSession(trust_env=True, connector=conn) as session:
 
-        logger.info("connecting to tibber...")
-        if session.closed:
-            logger.error("session closed")
-            exit(1)
-        try:
-            tibber_connection = tibber.Tibber(TIBBERTOKEN, user_agent="python", websession=session)
+            logger.info("connecting to tibber...")
+            if session.closed:
+                logger.error("session closed")
+                exit(1)
+            try:
+                tibber_connection = tibber.Tibber(TIBBERTOKEN, user_agent="python", websession=session)
 
-        except Exception as e:
-            logger.info("error connecting to tibber...")
+            except Exception as e:
+                logger.info("error connecting to tibber...")
 
-            logger.info(e)
-            raise e
-        await tibber_connection.update_info()
-    home = tibber_connection.get_homes()[0]
-    await home.rt_subscribe(_incoming)
+                logger.info(e)
+                raise e
+            await tibber_connection.update_info()
+        home = tibber_connection.get_homes()[0]
+        await home.rt_subscribe(_incoming)
 
-    while True:
-        await asyncio.sleep(5)
+        while True:
+            await asyncio.sleep(5)
+    except Exception as e:
+        logger.exception("Error occurred in run():")
+        raise e
 
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
