@@ -52,7 +52,7 @@ def timeout_handler(signum, frame):
 
 @home.event("live_measurement")
 async def show_current_power(data):
-    signal.alarm(0)
+    signal.alarm(8)
     _incoming(data)
 
 def stop(home):
