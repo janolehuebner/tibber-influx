@@ -5,7 +5,7 @@ LABEL MAINTAINER="Jan-Ole Hübner <huebner@jan-ole.de>"
 RUN apt-get update && apt-get install -y cron
 
 ADD requirements.txt /app
-RUN pip3 install -r /requirements.txt
+RUN pip3 install -r /app/requirements.txt
 
 ENV PYTHONIOENCODING=utf-8
 
