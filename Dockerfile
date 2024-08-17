@@ -12,7 +12,7 @@ ENV PYTHONIOENCODING=utf-8
 ADD . /app
 
 
-RUN echo "*/2 * * * * /app/delay_price.sh >> /var/log/cron.log 2>&1" > /etc/cron.d/get_price
+RUN echo -e "SHELL=/bin/bash\n* * * * * root /app/delay_price.sh >> /var/log/cron.log 2>&1" > /etc/cron.d/get_price
 
 RUN chmod 0644 /etc/cron.d/get_price
 
