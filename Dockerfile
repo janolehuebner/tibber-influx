@@ -1,4 +1,4 @@
-FROM python:3.12-bookworm
+FROM python:3.12-slim-bookworm
 
 # Labels
 LABEL MAINTAINER="Jan-Ole Hübner <huebner@jan-ole.de>"
