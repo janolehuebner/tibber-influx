@@ -20,6 +20,6 @@ RUN crontab /etc/cron.d/get_price
 
 RUN touch /var/log/cron.log
 
-RUN chmod 755 /app/pulse.py /app/get_price.py /app/start.sh /app/delay_price.sh
+RUN chmod 755 /app/pulse.py /app/get_price.py /app/start.sh
 
 CMD ["/app/start.sh"]
