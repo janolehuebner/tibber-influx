@@ -1,5 +1,5 @@
 #!/bin/bash
-source /env
+source /app/env
 sleep 2
 
-python3 /get_price.py >> /var/log/cron.log 2>&1
+python3 /app/get_price.py >> /var/log/cron.log 2>&1

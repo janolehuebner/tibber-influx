@@ -1,5 +1,5 @@
 #!/bin/bash
-
+printenv > /app/env
 # Start the cron service
 service cron start
 
