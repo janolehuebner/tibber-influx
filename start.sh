@@ -1,12 +1,5 @@
 #!/bin/bash
 
-# Print environment variables to a file
-printenv > /app/env
-
-# Start the cron service
-service cron start
-
-# Run your main application script (pulse.py) in the background
 python3 /app/pulse.py &
 
 # Run the other script periodically in the background
@@ -17,6 +10,5 @@ python3 /app/pulse.py &
   done
 ) &
 
-# Keep the container running and output both cron logs and pulse.py output
-tail -f /var/log/cron.log &
+
 wait -n
