@@ -1,6 +1,5 @@
 FROM python:3.12-bookworm
 
-# Labels
 LABEL MAINTAINER="Jan-Ole Hübner <huebner@jan-ole.de>"
 
 RUN apt-get update && apt-get install -y cron
@@ -20,6 +19,6 @@ RUN crontab /etc/cron.d/get_price
 
 RUN touch /var/log/cron.log
 
-RUN chmod 755 /pulse.py
+RUN chmod 755 /pulse.py /start.sh
 
-CMD service cron start && python3 /pulse.py
+CMD ["./start.sh"]
