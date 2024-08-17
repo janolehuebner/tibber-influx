@@ -1,8 +1,7 @@
-import asyncio
+
 import os
 import signal
 import sys
-import time
 
 import tibber
 from influxdb_client import InfluxDBClient
@@ -25,7 +24,7 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 logger.setLevel(logging.INFO)
 
-__version__ = "v0.3.4"
+__version__ = "v0.3.5_debug"
 logger.info(__version__)
 
 
@@ -61,7 +60,7 @@ def stop(home):
 try:
     signal.signal(signal.SIGALRM, timeout_handler)
     signal.alarm(15)
-    home.start_live_feed(user_agent="pulse.py/0.3.4",exit_condition=stop(home),retries=2,retry_interval=3.0)
+    home.start_live_feed(user_agent="pulse.py/0.3.5",exit_condition=stop(home),retries=2,retry_interval=3.0)
 except TypeError:
     logger.exception("Timeout occurred while executing start_live_feed()")
     client.close()
