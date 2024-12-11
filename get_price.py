@@ -21,7 +21,7 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 logger.setLevel(logging.INFO)
 
-__version__ = "v0.4.0"
+__version__ = "v0.4.2"
 logger.info(__version__)
 
 client = InfluxDBClient(url=URL, token=TOKEN, org=ORG)
