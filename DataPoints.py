@@ -14,7 +14,7 @@ class Pulse:
             "power": float(power),
             "lastMeterConsumption": float(lastMeterConsumption)
         }
-        if cost is not None:
+        if cost is not None and float(cost) > 0:
             fields.update({'accumulatedCost':cost})
         self.datapoint = {"fields": fields,
                      "tags": tags,
